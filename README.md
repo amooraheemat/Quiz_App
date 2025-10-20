@@ -132,8 +132,8 @@ The application uses:
 ## Author
 
 Quiz App Project Team
-Raheemat
-Wilx
-Adededayo
-Abduwaasil
-Debby
+Raheemat Amoo
+Wilson Utieyin
+Adeyoola Adebayo
+Abdulwaasi Saliu
+Deborah Onuoha
