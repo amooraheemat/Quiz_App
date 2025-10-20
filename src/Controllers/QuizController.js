@@ -33,7 +33,7 @@ exports.submitQuiz = (req, res) => {
         question: q.question,
         yourAnswer: userAnswer,
         correctAnswer: q.correctAnswer,
-        result: isCorrect ? '✅' : '❌'
+        result: isCorrect ? 'Correct' : 'Wrong'
       });
     });
 
