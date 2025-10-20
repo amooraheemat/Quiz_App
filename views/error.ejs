@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Error - Quiz App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-md mx-auto text-center">
+        <div class="bg-white rounded-lg shadow-md p-8">
+            <div class="text-6xl mb-4">😵</div>
+            <h1 class="text-2xl font-bold text-gray-800 mb-4">Oops! Something went wrong</h1>
+
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                <h2 class="text-lg font-semibold text-red-800">Error <%= error.status || 500 %>
+                </h2>
+                <p class="text-red-600">
+                    <%= message %>
+                </p>
+            </div>
+
+            <a href="/" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700">
+                Go Back to Quiz
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>
