@@ -129,11 +129,10 @@ The application uses:
 
 
 
-## Author
+## Author - Quiz App Project Team
 
-Quiz App Project Team
-Raheemat Amoo
-Wilson Utieyin
-Adeyoola Adebayo
-Abdulwaasi Saliu
-Deborah Onuoha
+1. Raheemat Amoo
+2. Wilson Utieyin
+3. Adeyoola Adebayo
+4. Abdulwaasi Saliu
+5. Deborah Onuoha

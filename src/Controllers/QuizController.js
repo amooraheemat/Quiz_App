@@ -1,48 +1,75 @@
-const fs = require('fs');
-const path = require('path');
-const db = require('../config/db');
+import db from '../Config/Database.js';
+import { sendQuizResultEmail } from '../Services/EmailService.js';
 
-const quizFilePath = path.join(__dirname, '../quiz.json');
+// Show the Quiz Page
+export const getQuizPage = (req, res) => {
+ const sql = 'SELECT * FROM questions';
 
+ db.query(sql, (err, results) => {
+  if (err) {
+    console.error('Error loading Quiz:', err);
+    return res.status(500).send('Server Error: Error loading quiz')
+  }
 
-exports.getQuizPage = (req, res) => {
-  fs.readFile(quizFilePath, 'utf8', (err, data) => {
-    if (err) return res.status(500).send('Error loading quiz.');
-    const quiz = JSON.parse(data);
-    res.render('quiz', { quiz });
-  });
+  res.render('quiz', {quiz: results });
+ });
 };
 
+// For Quiz Submission
+export const submitQuiz = (req, res) => {
+  const userAnswers = req.body;
+  const { name, email } = userAnswers;
 
-exports.submitQuiz = (req, res) => {
-  fs.readFile(quizFilePath, 'utf8', (err, data) => {
-    if (err) return res.status(500).send('Error reading quiz data.');
+  const sql = 'SELECT * FROM questions';
 
-    const quiz = JSON.parse(data);
-    const userAnswers = req.body;
+  db.query(sql, async (err, quiz) => {
+    if (err) {
+      console.error('Error reading quiz data:', err);
+      return res.status(500).send('Error reading quiz data.');
+    }
+
     let score = 0;
     let summary = [];
 
     quiz.forEach((q, index) => {
       const questionKey = `q${index + 1}`;
       const userAnswer = userAnswers[questionKey];
-      const isCorrect = userAnswer === q.correctAnswer;
+      const isCorrect = userAnswer === q.correct_answer;
+
       if (isCorrect) score++;
 
       summary.push({
-        question: q.question,
+        question: q.question_text,
         yourAnswer: userAnswer,
-        correctAnswer: q.correctAnswer,
+        correctAnswer: q.correct_answer,
         result: isCorrect ? 'Correct' : 'Wrong'
       });
     });
 
+    const quizTitle = 'General Quiz';
 
-    const { name, email } = userAnswers;
+    // Saves Results in the Database
+    const insertSql = 'INSERT INTO results (name, email, score) VALUES (?, ?, ?)';
+    db.query(insertSql, [name, email, score], async (err) => {
+      if (err) {
+        console.error('Error saving to DB:', err);
+        return res.status(500).send('Unable to save result.');
+      }
 
-    const sql = 'INSERT INTO results (name, email, score) VALUES (?, ?, ?)';
-    db.query(sql, [name, email, score], (err, result) => {
-      if (err) console.error('Error saving to DB:', err);
+      // Sends results via Email
+      try {
+        await sendQuizResultEmail(email, {
+          userName: name,
+          quizTitle,
+          score,
+          totalQuestions: quiz.length,
+          summary,
+        });
+      } catch (error) {
+        console.error('Error sending email:', error);
+      }
+
+      // Render Result Page 
       res.render('result', { name, score, summary });
     });
   });
