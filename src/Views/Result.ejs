@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Results | Quiz App</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Your Results</h1>
+    <p>You scored <strong><%= score %></strong> out of <%= total %>!</p>
+
+    <% if (score >= total / 2) { %>
+      <h2>🎉 Great job!</h2>
+    <% } else { %>
+      <h2>😅 Keep practicing!</h2>
+    <% } %>
+
+    <a href="/">Try Again</a>
+  </div>
+</body>
+</html>
