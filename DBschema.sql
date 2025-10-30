@@ -1,4 +1,3 @@
--- quiz_schema.sql
 DROP DATABASE IF EXISTS quizApp_DB;
 CREATE DATABASE quizApp_DB;
 USE quizApp_DB;
@@ -10,17 +9,17 @@ CREATE TABLE questions (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Options table (normalized)
+-- Options table
 CREATE TABLE options (
   id INT AUTO_INCREMENT PRIMARY KEY,
   question_id INT NOT NULL,
-  label CHAR(1) NOT NULL,           -- 'A', 'B', 'C', ...
+  label CHAR(1) NOT NULL,       -- 'A', 'B', 'C', ...
   text VARCHAR(300) NOT NULL,
   is_correct TINYINT(1) DEFAULT 0,  -- 1 = correct option
   FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE
 );
 
--- Example data
+-- Questions data
 INSERT INTO questions (text) VALUES
 ('Which of these is a key mindset shift for backend developers?'),
 ('What is the purpose of logging in backend systems?'),
@@ -53,6 +52,7 @@ INSERT INTO questions (text) VALUES
 ('Which variable is not available in ES modules by default?'),
 ('In the context of a URL (https://www.example.com:8080/path?query=search#section), which component is typically omitted from the address bar for common protocols like HTTPS?');
 
+--Options data
 INSERT INTO options (question_id, label, text, is_correct) VALUES
 (1, 'A', 'Focus on visual design', 0),
 (1, 'B', 'Prioritize frontend performance', 0),
