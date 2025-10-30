@@ -1,82 +1,30 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>Quiz App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz | Quiz App</title>
+  <link rel="stylesheet" href="/css/style.css" />
 </head>
+<body>
+  <div class="container">
+    <h1>Quiz Questions</h1>
 
-<body class="bg-gray-100 min-h-screen p-6">
-    <div class="max-w-4xl mx-auto">
-        <h1 class="text-3xl font-bold text-center mb-8 text-blue-600">Interactive Quiz</h1>
+    <form action="/result" method="post">
+      <% questions.forEach((q, index) => { %>
+        <div class="question">
+          <h3><%= index + 1 %>. <%= q.question %></h3>
+          <% q.options.forEach((opt) => { %>
+            <label>
+              <input type="radio" name="answer<%= index %>" value="<%= opt %>" required />
+              <%= opt %>
+            </label><br />
+          <% }) %>
+        </div>
+      <% }) %>
 
-        <% if (error) { %>
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-                <%= error %>
-            </div>
-            <% } %>
-
-                <form action="/submit" method="POST" class="bg-white rounded-lg shadow-md p-6">
-                    <!-- User Information -->
-                    <div class="bg-blue-50 p-4 rounded-lg mb-6">
-                        <h3 class="text-lg font-semibold mb-4">Your Information</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium mb-2">Name:</label>
-                                <input type="text" name="name" required
-                                    class="w-full p-2 border border-gray-300 rounded">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium mb-2">Email:</label>
-                                <input type="email" name="email" required
-                                    class="w-full p-2 border border-gray-300 rounded">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Questions -->
-                    <% questions.forEach((question, index)=> { %>
-                        <div class="bg-gray-50 p-6 rounded-lg mb-6">
-                            <h3 class="text-lg font-medium mb-4">
-                                Question <%= index + 1 %>: <%= question.question_text %>
-                            </h3>
-
-                            <div class="space-y-2">
-                                <label class="flex items-center p-2 hover:bg-gray-100 rounded">
-                                    <input type="radio" name="question_<%= question.id %>" value="a" required
-                                        class="mr-3">
-                                    A) <%= question.option_a %>
-                                </label>
-                                <label class="flex items-center p-2 hover:bg-gray-100 rounded">
-                                    <input type="radio" name="question_<%= question.id %>" value="b" required
-                                        class="mr-3">
-                                    B) <%= question.option_b %>
-                                </label>
-                                <label class="flex items-center p-2 hover:bg-gray-100 rounded">
-                                    <input type="radio" name="question_<%= question.id %>" value="c" required
-                                        class="mr-3">
-                                    C) <%= question.option_c %>
-                                </label>
-                                <label class="flex items-center p-2 hover:bg-gray-100 rounded">
-                                    <input type="radio" name="question_<%= question.id %>" value="d" required
-                                        class="mr-3">
-                                    D) <%= question.option_d %>
-                                </label>
-                                <label class="flex items-center p-2 hover:bg-gray-100 rounded">
-                                    <input type="radio" name="question_<%= question.id %>" value="e" required
-                                        class="mr-3">
-                                    E) <%= question.option_e %>
-                                </label>
-                            </div>
-                        </div>
-                        <% }); %>
-
-                            <button type="submit"
-                                class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 font-medium text-lg">
-                                Submit Quiz
-                            </button>
-                </form>
-    </div>
+      <button type="submit">Submit Quiz</button>
+    </form>
+  </div>
 </body>
-
 </html>
