@@ -1,8 +1,10 @@
-const express = require('express');
+import express from 'express';
+
+import { getQuizPage, submitQuiz } from '../Controllers/QuizController.js';
+
 const router = express.Router();
-const quizController = require('../Controllers/quizController');
 
-router.get('/quiz', quizController.getQuizPage);
-router.post('/submit', quizController.submitQuiz);
+router.get('/quiz', getQuizPage);
+router.post('/submit', submitQuiz);
 
-module.exports = router;
+export default router;
