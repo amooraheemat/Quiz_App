@@ -19,6 +19,15 @@ CREATE TABLE options (
   FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE
 );
 
+-- Results table
+CREATE TABLE results (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  score INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Questions data
 INSERT INTO questions (text) VALUES
 ('Which of these is a key mindset shift for backend developers?'),
