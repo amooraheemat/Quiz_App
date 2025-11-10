@@ -45,10 +45,10 @@ export const submitQuiz = async (req, res) => {
 
     questions.forEach((question, index) => {
       const questionKey = `q${index + 1}`;
-      const userAnswer = userAnswers[questionKey];
+      const userAnswer = userAnswers[questionKey] || "Not Answered";
 
       // Find the correct answer
-      const correctOption = question.Options.find(opt => opt.is_correct === 1);
+      const correctOption = question.Options.find(opt => opt.is_correct);
       const correctAnswerLabel = correctOption ? correctOption.label : "";
 
       const isCorrect = userAnswer === correctAnswerLabel;
@@ -59,7 +59,8 @@ export const submitQuiz = async (req, res) => {
         question: question.text,
         yourAnswer: userAnswer,
         correctAnswer: correctAnswerLabel,
-        result: isCorrect ? "Correct" : "Wrong",
+        isCorrect,
+        result: isCorrect ? "Correct" : "Wrong"
       });
     });
 
@@ -69,21 +70,19 @@ export const submitQuiz = async (req, res) => {
     await Result.create({
       name: name,
       email: email,
-      score: score
+      score: score,
+      totalQuestions: questions.length,
+      summary: JSON.stringify(summary) // Save full summary for reference
     });
 
     // Send results via Email
-    try {
-      await sendQuizResultEmail(email, {
+      sendQuizResultEmail(email, {
         userName: name,
         quizTitle,
         score,
         totalQuestions: questions.length,
-        summary,
-      });
-    } catch (error) {
-      console.error("Error sending email:", error);
-    }
+        summary
+      }).catch(err => console.error("Error sending email:", err));
 
     // Render Result Page
     res.render("result", { name, score, summary });
