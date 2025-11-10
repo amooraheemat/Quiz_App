@@ -1,118 +1,95 @@
-import db from "../Config/Database.js";
+import { Question, Option, Result } from "../Models/index.js";
 import { sendQuizResultEmail } from "../Services/EmailService.js";
 
+// Initialize models when controller is loaded
+import "../Models/index.js";
+
 // Show the Quiz Page
-export const getQuizPage = (req, res) => {
-  const sql = "SELECT * FROM questions";
-
-  db.query(sql, (err, questions) => {
-    if (err) {
-      console.error("Error loading Quiz:", err);
-      return res.status(500).send("Server Error: Error loading quiz");
-    }
-
-    // Get options for all questions
-    const optionsSql = "SELECT * FROM options";
-    db.query(optionsSql, (err, options) => {
-      if (err) {
-        console.error("Error loading options:", err);
-        return res.status(500).send("Server Error: Error loading options");
-      }
-
-      // Attach options to each question
-      for (let i = 0; i < questions.length; i++) {
-        const questionOptions = [];
-        for (let j = 0; j < options.length; j++) {
-          if (options[j].question_id === questions[i].id) {
-            questionOptions.push(options[j]);
-          }
-        }
-        questions[i].options = questionOptions;
-      }
-
-      res.render("quiz", { quiz: questions });
+export const getQuizPage = async (req, res) => {
+  try {
+    console.log("Loading quiz page...");
+    const questions = await Question.findAll({
+      include: [{
+        model: Option,
+        attributes: ['id', 'label', 'text']
+      }]
     });
-  });
+
+    console.log("Questions loaded:", questions.length);
+    console.log("First question:", questions[0]?.text);
+    console.log("First question options:", questions[0]?.Options?.length);
+
+    res.render("quiz", { quiz: questions });
+  } catch (err) {
+    console.error("Error loading Quiz:", err);
+    res.status(500).send(`Server Error: ${err.message}`);
+  }
 };
 
 // For Quiz Submission
-export const submitQuiz = (req, res) => {
-  const userAnswers = req.body;
-  const { name, email } = userAnswers;
+export const submitQuiz = async (req, res) => {
+  try {
+    const userAnswers = req.body;
+    const { name, email } = userAnswers;
 
-  const sql = "SELECT * FROM questions";
+    // Get all questions with their options
+    const questions = await Question.findAll({
+      include: [{
+        model: Option,
+        attributes: ['id', 'label', 'text', 'is_correct']
+      }]
+    });
 
-  db.query(sql, async (err, quiz) => {
-    if (err) {
-      console.error("Error reading quiz data:", err);
-      return res.status(500).send("Error reading quiz data.");
-    }
+    let score = 0;
+    let summary = [];
 
-    // Get options for all questions
-    const optionsSql = "SELECT * FROM options";
-    db.query(optionsSql, async (err, options) => {
-      if (err) {
-        console.error("Error reading options:", err);
-        return res.status(500).send("Error reading options.");
-      }
+    questions.forEach((question, index) => {
+      const questionKey = `q${index + 1}`;
+      const userAnswer = userAnswers[questionKey];
 
-      let score = 0;
-      let summary = [];
+      // Find the correct answer
+      const correctOption = question.Options.find(opt => opt.is_correct === 1);
+      const correctAnswerLabel = correctOption ? correctOption.label : "";
 
-      quiz.forEach((q, index) => {
-        const questionKey = `q${index + 1}`;
-        const userAnswer = userAnswers[questionKey];
+      const isCorrect = userAnswer === correctAnswerLabel;
 
-        // Find options for this question
-        const questionOptions = options.filter(
-          (opt) => opt.question_id === q.id
-        );
+      if (isCorrect) score++;
 
-        // Find the correct answer
-        const correctOption = questionOptions.find(
-          (opt) => opt.is_correct === 1
-        );
-        const correctAnswerLabel = correctOption ? correctOption.label : "";
-
-        const isCorrect = userAnswer === correctAnswerLabel;
-
-        if (isCorrect) score++;
-
-        summary.push({
-          question: q.text,
-          yourAnswer: userAnswer,
-          correctAnswer: correctAnswerLabel,
-          result: isCorrect ? "Correct" : "Wrong",
-        });
-      });
-
-      const quizTitle = "General Quiz";
-
-      // Saves Results in the Database
-      const insertSql =
-        "INSERT INTO results (name, email, score) VALUES (?, ?, ?)";
-      db.query(insertSql, [name, email, score], async (err) => {
-        if (err) {
-          console.error("Error saving to DB:", err);
-          return res.status(500).send("Unable to save result.");
-        }
-
-        // Sends results via Email
-        try {
-          await sendQuizResultEmail(email, {
-            userName: name,
-            quizTitle,
-            score,
-            totalQuestions: quiz.length,
-            summary,
-          });
-        } catch (error) {
-          console.error("Error sending email:", error);
-        }
-
-        // Render Result Page
-        res.render("result", { name, score, summary });
+      summary.push({
+        question: question.text,
+        yourAnswer: userAnswer,
+        correctAnswer: correctAnswerLabel,
+        result: isCorrect ? "Correct" : "Wrong",
       });
     });
-  });
+
+    const quizTitle = "General Quiz";
+
+    // Save Results in the Database
+    await Result.create({
+      name: name,
+      email: email,
+      score: score
+    });
+
+    // Send results via Email
+    try {
+      await sendQuizResultEmail(email, {
+        userName: name,
+        quizTitle,
+        score,
+        totalQuestions: questions.length,
+        summary,
+      });
+    } catch (error) {
+      console.error("Error sending email:", error);
+    }
+
+    // Render Result Page
+    res.render("result", { name, score, summary });
+
+  } catch (err) {
+    console.error("Error processing quiz submission:", err);
+    res.status(500).send("Unable to process quiz submission.");
+  }
 };

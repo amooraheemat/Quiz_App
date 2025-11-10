@@ -1,22 +1,14 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../Config/Database.js';
 
-const Result = sequelize.define('Result', {
+const Question = sequelize.define('Question', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    name: {
-        type: DataTypes.STRING(100),
-        allowNull: false
-    },
-    email: {
-        type: DataTypes.STRING(100),
-        allowNull: false
-    },
-    score: {
-        type: DataTypes.INTEGER,
+    text: {
+        type: DataTypes.TEXT,
         allowNull: false
     },
     created_at: {
@@ -24,8 +16,8 @@ const Result = sequelize.define('Result', {
         defaultValue: DataTypes.NOW
     }
 }, {
-    tableName: 'results',
+    tableName: 'questions',
     timestamps: false
 });
 
-export default Result;
+export default Question;

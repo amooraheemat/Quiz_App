@@ -1,23 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Results | Quiz App</title>
-  <link rel="stylesheet" href="/css/style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Results</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .result-header {
+      text-align: center;
+      margin: 20px 0;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 5px;
+    }
+
+    .summary {
+      margin: 20px 0;
+    }
+
+    .question-result {
+      margin: 10px 0;
+      padding: 10px;
+      border-left: 4px solid #ddd;
+    }
+
+    .correct {
+      border-left-color: #28a745;
+      background: #d4edda;
+    }
+
+    .wrong {
+      border-left-color: #dc3545;
+      background: #f8d7da;
+    }
+
+    .score {
+      font-size: 24px;
+      font-weight: bold;
+      color: #007bff;
+    }
+
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
+
 <body>
-  <div class="container">
-    <h1>Your Results</h1>
-    <p>You scored <strong><%= score %></strong> out of <%= total %>!</p>
+  <div class="result-header">
+    <h1>Quiz Results</h1>
+    <p>Hello, <strong>
+        <%= name %>
+      </strong>!</p>
+    <p class="score">Your Score: <%= score %>/<%= summary.length %>
+    </p>
+    <p>Percentage: <%= Math.round((score / summary.length) * 100) %>%</p>
+  </div>
 
-    <% if (score >= total / 2) { %>
-      <h2>Great job!</h2>
-    <% } else { %>
-      <h2>Keep practicing!</h2>
-    <% } %>
+  <div class="summary">
+    <h2>Question Summary</h2>
+    <% summary.forEach((item, index)=> { %>
+      <div class="question-result <%= item.result.toLowerCase() %>">
+        <h4>
+          <%= index + 1 %>. <%= item.question %>
+        </h4>
+        <p><strong>Your Answer:</strong>
+          <%= item.yourAnswer || 'Not answered' %>
+        </p>
+        <p><strong>Correct Answer:</strong>
+          <%= item.correctAnswer %>
+        </p>
+        <p><strong>Result:</strong>
+          <%= item.result %>
+        </p>
+      </div>
+      <% }) %>
+  </div>
 
-    <a href="/">Try Again</a>
+  <div style="text-align: center; margin: 30px 0;">
+    <a href="/quiz">Take Quiz Again</a>
   </div>
 </body>
+
 </html>

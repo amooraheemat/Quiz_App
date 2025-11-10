@@ -1,138 +1,85 @@
+# Quiz App
 
-# Quiz App Project
-
-A simple web-based quiz application built with Node.js, Express, and EJS templating engine. Users can take programming and technology quizzes and view their results.
+A web-based quiz application built with Node.js, Express, and MySQL. Users can take a quiz, submit answers, and receive their scores via email.
 
 ## Features
 
-- Interactive quiz interface with multiple-choice questions
+- 30 multiple-choice questions loaded from MySQL database
 - Real-time score calculation
-- User registration with name and email
-- Results display with detailed answer breakdown
-- Database integration with MySQL/Sequelize
-- Email service integration
-- Responsive web design
+- Results saved to database
+- Email notification with quiz results
+- Responsive web interface
 
 ## Tech Stack
 
-- **Backend**: Node.js, Express.js
-- **Database**: MySQL with Sequelize ORM
-- **Template Engine**: EJS
-- **Email Service**: Nodemailer
-- **Environment**: dotenv for configuration
-- **Development**: Nodemon for auto-restart
+- Node.js
+- Express.js
+- MySQL
+- Sequelize ORM
+- EJS templating
+- Nodemailer for email
 
-## Project Structure
+## Prerequisites
 
-```
-quiz_app_project/
-├── config/
-│   └── db.js              # Database configuration
-├── controllers/
-│   └── quizController.js  # Quiz logic and database operations
-├── models/
-│   ├── User.js           # User model
-│   ├── questions.js      # Questions model
-│   └── quizResult.js     # Quiz results model
-├── routes/
-│   └── quiz.js           # Quiz routes and endpoints
-├── services/
-│   └── emailService.js   # Email functionality
-├── views/
-│   ├── quiz.ejs          # Quiz interface
-│   ├── results.ejs       # Results display
-│   ├── result.ejs        # Individual result view
-│   └── error.ejs         # Error page
-├── .env                  # Environment variables
-├── index.js              # Main application entry point
-└── package.json          # Dependencies and scripts
-```
+- Node.js installed
+- MySQL server running
+- SMTP credentials for email service
 
 ## Installation
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd quiz_app_project
-```
-
+1. Clone the repository
 2. Install dependencies:
 ```bash
 npm install
 ```
 
-3. Set up environment variables:
-Create a `.env` file in the root directory with:
-```env
-PORT=3000
-DB_HOST=localhost
-DB_USER=your_db_user
-DB_PASSWORD=your_db_password
-DB_NAME=quiz_app_db
-EMAIL_HOST=your_email_host
-EMAIL_PORT=587
-EMAIL_USER=your_email@example.com
-EMAIL_PASS=your_email_password
+3. Create database:
+```bash
+mysql -u root -p < DBschema.sql
 ```
 
-4. Set up the database:
-- Create a MySQL database
-- Update the database configuration in `config/db.js`
-- Run the application to auto-create tables
+4. Configure environment variables in `.env`:
+```
+DB_HOST=localhost
+DB_USER=root
+DB_PASS=your_password
+DB_NAME=quizapp_db
+DB_PORT=3306
+DB_DIALECT=mysql
+```
+
+5. Configure email service in `src/Services/EmailService.js`
 
 ## Usage
 
-1. Start the development server:
+Start the server:
 ```bash
 npm start
 ```
 
-2. Open your browser and navigate to:
+For development with auto-reload:
+```bash
+npm run dev
 ```
-http://localhost:3000
+
+Visit `http://localhost:3000` to take the quiz.
+
+## Project Structure
+
+```
+Quiz_App/
+├── src/
+│   ├── Config/         # Database configuration
+│   ├── Models/         # Sequelize models
+│   ├── Services/       # Email service
+│   ├── Views/          # EJS templates
+│   └── app.js          # Main application file
+├── DBschema.sql        # Database schema and seed data
+└── package.json
 ```
 
-3. Take the quiz:
-   - Enter your name and email
-   - Answer the multiple-choice questions
-   - Submit to view your results
+## Database Schema
 
-## Quiz Content
-
-The app includes 10 programming and technology questions covering:
-- JavaScript fundamentals
-- Node.js concepts
-- Git commands
-- HTML basics
-- Web development concepts
-
-## API Endpoints
-
-- `GET /` - Display the quiz interface
-- `POST /submit` - Submit quiz answers and get results
-
-## Development
-
-The application uses:
-- **Nodemon** for automatic server restart during development
-- **Sequelize** for database operations and migrations
-- **EJS** for server-side rendering
-- **Express middleware** for request handling
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-
-
-## Author - Quiz App Project Team
-
-1. Raheemat Amoo
-2. Wilson Utieyin
-3. Adeyoola Adebayo
-4. Abdulwaasi Saliu
-5. Deborah Onuoha
+- questions: Quiz questions
+- options: Answer options for each question
+- results: User quiz results

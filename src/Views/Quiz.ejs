@@ -1,35 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Quiz | Quiz App</title>
-    <link rel="stylesheet" href="/css/style.css" />
-  </head>
-  <body>
-    <div class="container">
-      <h1>Quiz Questions</h1>
 
-      <form action="/submit" method="post">
-        <% questions.forEach((q, index) => { %>
-        <div class="question">
-          <h3><%= index + 1 %>. <%= q.text %></h3>
-          <% q.options.forEach((opt) => { %>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .question {
+      margin: 20px 0;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    .user-info {
+      margin: 20px 0;
+      padding: 15px;
+      background: #f5f5f5;
+      border-radius: 5px;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      width: 200px;
+      padding: 5px;
+      margin: 5px;
+    }
+
+    input[type="radio"] {
+      margin: 5px;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    label {
+      display: block;
+      margin: 5px 0;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Quiz Questions</h1>
+
+  <form action="/submit" method="post">
+    <div class="user-info">
+      <label>Name: <input type="text" name="name" required /></label>
+      <label>Email: <input type="email" name="email" required /></label>
+    </div>
+
+    <% quiz.forEach((question, index)=> { %>
+      <div class="question">
+        <h3>
+          <%= index + 1 %>. <%= question.text %>
+        </h3>
+        <% question.Options.forEach((option)=> { %>
           <label>
-            <input
-              type="radio"
-              name="answer<%= index %>"
-              value="<%= opt %>"
-              required
-            />
-            <%= opt %> </label
-          ><br />
+            <input type="radio" name="q<%= index + 1 %>" value="<%= option.label %>" required />
+            <%= option.label %>. <%= option.text %>
+          </label>
           <% }) %>
-        </div>
-        <% }) %>
+      </div>
+      <% }) %>
 
         <button type="submit">Submit Quiz</button>
-      </form>
-    </div>
-  </body>
+  </form>
+</body>
+
 </html>
