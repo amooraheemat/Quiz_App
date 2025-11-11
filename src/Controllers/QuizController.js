@@ -71,7 +71,7 @@ export const submitQuiz = async (req, res) => {
       name: name,
       email: email,
       score: score,
-      totalQuestions: questions.length,
+      total_questions: questions.length,
       summary: JSON.stringify(summary) // Save full summary for reference
     });
 

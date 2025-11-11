@@ -19,6 +19,14 @@ const Result = sequelize.define('Result', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
+    total_questions: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    summary: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
     created_at: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW

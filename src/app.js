@@ -68,7 +68,13 @@ app.post('/submit', async (req, res) => {
       });
     });
 
-    await Result.create({ name, email, score });
+    await Result.create({ 
+      name, 
+      email, 
+      score,
+      total_questions: questions.length,
+      summary: JSON.stringify(summary)
+    });
 
     try {
       await sendQuizResultEmail(email, {

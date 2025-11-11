@@ -25,6 +25,8 @@ CREATE TABLE results (
   name VARCHAR(100) NOT NULL,
   email VARCHAR(100) NOT NULL,
   score INT NOT NULL,
+  total_questions INT NOT NULL,
+  summary TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
